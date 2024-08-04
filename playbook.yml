@@ -1,0 +1,54 @@
+---
+- name: Instalar paquetes
+  hosts: web
+  become: yes
+  tasks:  
+    - name: Instalar nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+- name: Crear usuario
+  hosts: app
+  become: yes  # Añadido become: yes para obtener privilegios elevados
+  tasks:  # Se corrigió 'task' a 'tasks'
+    - name: Crear un nuevo usuario
+      user:
+        name: Itla
+        state: present
+
+- name: Tareas de configuración
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar cowsay
+      apt:
+        name: cowsay
+        state: present
+        update_cache: yes
+
+    - name: Crear un archivo
+      file:
+        path: mi_archivo.txt
+        state: touch
+
+    - name: Copiar archivos
+      copy:
+        src: file.txt
+        dest: remoto_file.txt
+
+    - name: Crear carpetas
+      file:
+        path: mi_carpeta
+        state: directory
+        mode: '0755'
+
+    - name: Iniciar un servicio
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Ejecutar un script en el servidor
+      script: script.sh
